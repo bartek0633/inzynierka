@@ -28,6 +28,12 @@
                   android:name="android.support.PARENT_ACTIVITY"
                   android:value=".StartActivity"/>
         </activity>
+        <activity android:name=".CalculatePosition"
+                  android:parentActivityName=".DataActivition">
+            <meta-data
+                  android:name="android.support.PARENT_ACTIVITY"
+                  android:value=".DataActivition"/>
+        </activity>
 
     </application>
 

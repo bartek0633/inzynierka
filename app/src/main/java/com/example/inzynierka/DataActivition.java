@@ -1,6 +1,7 @@
 package com.example.inzynierka;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -52,18 +53,11 @@ public class DataActivition extends AppCompatActivity {
         calculateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
-                startActivityForResult(intent, 1);
+                Intent intent = new Intent(getApplicationContext(), CalculatePosition.class);
+                intent.putExtra(EXTRA_MSG_OBS_DIRECTION, horizontalCoo);
+                intent.putExtra(EXTRA_MSG_OBS_LOCATION, locationCoo);
+                startActivity(intent);
             }
         });
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        Intent intent = new Intent(this, CalculatePosition.class);
-        intent.putExtra(EXTRA_MSG_OBS_DIRECTION, h_coo);
-        intent.putExtra(EXTRA_MSG_OBS_LOCATION, locationCoo);
-        startActivity(intent);
     }
 }
