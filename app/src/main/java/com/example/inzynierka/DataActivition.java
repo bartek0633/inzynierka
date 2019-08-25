@@ -14,9 +14,9 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class DataActivition extends AppCompatActivity {
-    float[] horizontalCoo = new float[3];
-    double[] locationCoo = new double[2];
-    float[] h_coo = new float[2];
+    float[] horizontalCoo;
+    double[] locationCoo;
+    //float[] h_coo;
 
     public static final String EXTRA_MSG_OBS_DIRECTION = "com.example.inzynierka.MSG_OBS_DIRECTION";
     public static final String EXTRA_MSG_OBS_LOCATION = "com.example.inzynierka.MSG_OBS_LOCATION";
@@ -39,6 +39,7 @@ public class DataActivition extends AppCompatActivity {
 
         // choose roll or pitch
 
+
         TextView textView4 = findViewById(R.id.dataTextView4);
         textView4.setText(String.valueOf(locationCoo[0]));              //latitude
         TextView textView5 = findViewById(R.id.dataTextView5);
@@ -49,7 +50,7 @@ public class DataActivition extends AppCompatActivity {
         TextView textView6 = findViewById(R.id.dataTextView6);
         textView6.setText(String.valueOf(currentTime));
 
-        Button calculateBtn = (Button) findViewById(R.id.calculateBtn);
+        Button calculateBtn = findViewById(R.id.calculateBtn);
         calculateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

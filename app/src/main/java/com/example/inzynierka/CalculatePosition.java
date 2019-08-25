@@ -10,34 +10,24 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.List;
 
-import static java.lang.Math.*;
-
 public class CalculatePosition extends AppCompatActivity {
-    //private static double x, y, z, d_xy;                                       // cartesian coordinates [parsec]
-    //private static double rightAscension, declination;                         // actual stellar position
-    //private static double hCoo[][];                                            // actual stellar position in horizontal coordinates
-    double[] obsCoo = new double[2];
-    float[] obsDir = new float[2];
+    double[] obsCoo;
+    float[] obsDir;
     Date currentDate;
 
     private List<AstronomicalObject> astronomicalObjects = new ArrayList<>();
-    //private static String[] name;
-    //private static double[][] data;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.position_activity);
         Intent intent = getIntent();
+
         obsCoo = intent.getDoubleArrayExtra(DataActivition.EXTRA_MSG_OBS_LOCATION);
         obsDir = intent.getFloatArrayExtra(DataActivition.EXTRA_MSG_OBS_DIRECTION);
         currentDate = Calendar.getInstance().getTime();
@@ -48,6 +38,7 @@ public class CalculatePosition extends AppCompatActivity {
         }
 
         // wypisac liste
+
         for (int i = 0; i < astronomicalObjects.size(); i++){
             //astronomicalObjects.get(i).calculate(obsCoo[0]);
             System.out.println(astronomicalObjects.get(i).gethCoo(0));
@@ -59,9 +50,8 @@ public class CalculatePosition extends AppCompatActivity {
         BufferedReader reader = new BufferedReader(
                 new InputStreamReader(is, Charset.forName("UTF-8"))
         );
-        String line = "";
+        String line;
         try {
-            //step over headers
             reader.readLine();
             while(((line = reader.readLine()) != null)){
                 String[] tokens = line.split(";");

@@ -23,7 +23,7 @@ public class AstronomicalObject {
         return name;
     }
 
-    public void setName(String name) {
+    void setName(String name) {
         this.name = name;
     }
 
@@ -31,7 +31,7 @@ public class AstronomicalObject {
         return rA;
     }
 
-    public void setRA(double rA) {
+    void setRA(double rA) {
         this.rA = rA;
     }
 
@@ -39,7 +39,7 @@ public class AstronomicalObject {
         return dec;
     }
 
-    public void setDec(double dec) {
+    void setDec(double dec) {
         this.dec = dec;
     }
 
@@ -47,11 +47,11 @@ public class AstronomicalObject {
         return distance;
     }
 
-    public void setDistance(double distance) {
+    void setDistance(double distance) {
         this.distance = distance;
     }
 
-    public double gethCoo(int i) {
+    double gethCoo(int i) {
         return hCoo[i];
     }
 
@@ -59,7 +59,7 @@ public class AstronomicalObject {
         this.hCoo = hCoo;
     }
 
-    public void calculate(double latitude){
+    void calculate(double latitude){
         dec = Math.toRadians(dec);
         rA = Math.toRadians(rA);
         x = distance * cos(dec) * cos(rA);
@@ -81,7 +81,7 @@ public class AstronomicalObject {
 
         //rozwiązać problem obliczania GMST
 
-        double cupsOfAries = 23+42.0/60+3.0/3600;       //punkt równonocy wiosennej
+        double cupsOfAries = 23.0+42.0/60+3.0/3600;       //punkt równonocy wiosennej
         double hourAngle = cupsOfAries - rA;
 
         double azimuth_sin, azimuth_cos, azimuth, altitude;
