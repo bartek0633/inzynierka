@@ -10,6 +10,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Location;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -31,19 +32,14 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
     public static final String EXTRA_MESSAGE_LOCATION = "com.example.inzynierka.MESSAGE_LOCATION";
 
     private SensorManager sensorManager;
-    //Sensor gyroscopeSensor;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.start_activity);
         ImageButton cameraBtn = (ImageButton) findViewById(R.id.backgroundImageButton);
-
-        /*SensorManager.getOrientation(rotationMatrix, orientationAngles);
-        gyroscopeSensor = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
-
-        sensorManager.registerListener(gyroscopeListener, gyroscopeSensor, SensorManager.SENSOR_DELAY_NORMAL);*/
         sensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
         ActivityCompat.requestPermissions(StartActivity.this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, 123);
         cameraBtn.setOnClickListener(new View.OnClickListener() {
@@ -96,18 +92,6 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
         super.onStop();
         sensorManager.unregisterListener(this);
     }
-
-    /*public SensorEventListener gyroscopeListener = new SensorEventListener() {
-        @Override
-        public void onSensorChanged(SensorEvent event) {
-
-        }
-
-        @Override
-        public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
-        }
-    };*/
 
     public void updateOrientationAngles(){
         SensorManager.getRotationMatrix(rotationMatrix, null, accelerometerData, magnetometerData);
