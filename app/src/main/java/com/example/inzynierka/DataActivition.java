@@ -1,10 +1,9 @@
 package com.example.inzynierka;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
+import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -15,8 +14,10 @@ import java.util.Date;
 
 public class DataActivition extends AppCompatActivity {
     float[] horizontalCoo;
+    float[] horizontalCooCorrect = new float[2];
+
     double[] locationCoo;
-    //float[] h_coo;
+    float[] linearAcceleration;
 
     public static final String EXTRA_MSG_OBS_DIRECTION = "com.example.inzynierka.MSG_OBS_DIRECTION";
     public static final String EXTRA_MSG_OBS_LOCATION = "com.example.inzynierka.MSG_OBS_LOCATION";
@@ -29,16 +30,16 @@ public class DataActivition extends AppCompatActivity {
         Intent intent = getIntent();
         horizontalCoo = intent.getFloatArrayExtra(StartActivity.EXTRA_MESSAGE_ORIENTATION);
         locationCoo = intent.getDoubleArrayExtra(StartActivity.EXTRA_MESSAGE_LOCATION);
+        linearAcceleration = intent.getFloatArrayExtra(StartActivity.EXTRA_MESSAGE_ACCELERATION);
 
         TextView textView1 = findViewById(R.id.dataTextView1);
-        textView1.setText(horizontalCoo[0]*180/Math.PI + " degrees");    // azimuth zeby zaokraglic .setText(String.format("%.2f ", data)
-        TextView textView2 = findViewById(R.id.dataTextView2);
-        textView2.setText(horizontalCoo[1]*180/Math.PI + " degrees");    // pitch
-        TextView textView3 = findViewById(R.id.dataTextView3);
-        textView3.setText(horizontalCoo[2]*90/Math.PI + " degrees");     // roll
+        textView1.setText(String.format("%.3f ",horizontalCoo[0]) + " degrees");
+        TextView textView2 = findViewById(R.id.dataTextView3);
+        textView2.setText(String.format("%.3f ",horizontalCoo[1]) + " degrees");
+        TextView textView3 = findViewById(R.id.dataTextView2);
+        textView3.setText(String.format("%.3f ",horizontalCoo[2]) + " degrees");
 
-        // choose roll or pitch
-
+        selectAngles(horizontalCoo, linearAcceleration);
 
         TextView textView4 = findViewById(R.id.dataTextView4);
         textView4.setText(String.valueOf(locationCoo[0]));              //latitude
@@ -55,10 +56,31 @@ public class DataActivition extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), CalculatePosition.class);
-                intent.putExtra(EXTRA_MSG_OBS_DIRECTION, horizontalCoo);
+                intent.putExtra(EXTRA_MSG_OBS_DIRECTION, horizontalCooCorrect);
                 intent.putExtra(EXTRA_MSG_OBS_LOCATION, locationCoo);
                 startActivity(intent);
             }
         });
+    }
+
+    private void selectAngles(float[] hCoo, float[] lAcc){
+        if (Math.abs(lAcc[1]) > Math.abs(lAcc[0])){                 //horizontal
+            if(lAcc[1]>=0){                                         //+
+                horizontalCooCorrect[0] = hCoo[0] - 180;
+                horizontalCooCorrect[1] = hCoo[1] + 90;
+            } else{                                                 //-
+                horizontalCooCorrect[0] = hCoo[0];
+                horizontalCooCorrect[1] = 90 - hCoo[1];
+            }
+        }
+        else if(Math.abs(lAcc[0]) >= Math.abs(lAcc[1])){             //vertical
+            if(lAcc[0]>=0){                                          //+
+                horizontalCooCorrect[0] = hCoo[0] + 90;
+                horizontalCooCorrect[1] = hCoo[2];
+            } else {                                                 //-
+                horizontalCooCorrect[0] = hCoo[0];
+                horizontalCooCorrect[1] = hCoo[2] + 180;
+            }
+        }
     }
 }

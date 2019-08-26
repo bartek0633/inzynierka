@@ -1,7 +1,6 @@
 package com.example.inzynierka;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
@@ -10,7 +9,6 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Location;
 import android.provider.MediaStore;
-import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -26,13 +24,13 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
 
     private final float[] rotationMatrix = new float[9];
     private final float[] orientationAngles = new float[3];
-
+    //double[] linear_acceleration = new double[3];
 
     public static final String EXTRA_MESSAGE_ORIENTATION = "com.example.inzynierka.MESSAGE_ORIENTATION";
     public static final String EXTRA_MESSAGE_LOCATION = "com.example.inzynierka.MESSAGE_LOCATION";
+    public static final String EXTRA_MESSAGE_ACCELERATION = "com.example.inzynierka.MESSAGE_ACCELERATION";
 
     private SensorManager sensorManager;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +47,7 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
                 LocationTracker locationTracker = new LocationTracker(getApplicationContext());
                 Location location = locationTracker.getLocation();
                 if(location == null){
-                    Toast.makeText(getApplicationContext(), "NETWORK unable to get value.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "GPS unable to get value. \n   Turn on GPS.", Toast.LENGTH_SHORT).show();
                 } else {
                     locationData[0] = location.getLatitude();
                     locationData[1] = location.getLongitude();
@@ -101,8 +99,14 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data);
         Intent intent = new Intent(this, DataActivition.class);
+
+        orientationAngles[0] = (float)Math.toDegrees(orientationAngles[0]);
+        orientationAngles[1] = (float)Math.toDegrees(orientationAngles[1]);
+        orientationAngles[2] = (float)Math.toDegrees(orientationAngles[2]);
+
         intent.putExtra(EXTRA_MESSAGE_ORIENTATION, orientationAngles);
         intent.putExtra(EXTRA_MESSAGE_LOCATION, locationData);
+        intent.putExtra(EXTRA_MESSAGE_ACCELERATION, accelerometerData);
         startActivity(intent);
     }
 }

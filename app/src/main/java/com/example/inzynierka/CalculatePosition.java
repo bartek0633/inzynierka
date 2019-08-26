@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,10 +17,15 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import static android.R.layout.activity_list_item;
+import static android.R.layout.simple_list_item_1;
+
 public class CalculatePosition extends AppCompatActivity {
     double[] obsCoo;
     float[] obsDir;
     Date currentDate;
+    ListView listView;
+    ArrayAdapter adapter;
 
     private List<AstronomicalObject> astronomicalObjects = new ArrayList<>();
 
@@ -38,11 +45,12 @@ public class CalculatePosition extends AppCompatActivity {
         }
 
         // wypisac liste
+        //adapter = new ArrayAdapter<String>(this, android.R.layout.list_content, astronomicalObjects);
 
-        for (int i = 0; i < astronomicalObjects.size(); i++){
-            //astronomicalObjects.get(i).calculate(obsCoo[0]);
+
+        /*for (int i = 0; i < astronomicalObjects.size(); i++){
             System.out.println(astronomicalObjects.get(i).gethCoo(0));
-        }
+        }*/
     }
 
     private void readCsv(){
