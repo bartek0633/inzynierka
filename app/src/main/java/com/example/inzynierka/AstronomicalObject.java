@@ -1,5 +1,14 @@
 package com.example.inzynierka;
 
+import android.annotation.SuppressLint;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
+
 import static java.lang.Math.asin;
 import static java.lang.Math.atan;
 import static java.lang.Math.cos;
@@ -9,17 +18,18 @@ import static java.lang.Math.sqrt;
 import static java.lang.Math.tan;
 
 public class AstronomicalObject {
-    private String name;                                //
-    private double rA;                                  //
-    private double dec;                                 // } from csv file
-    private double distance;                            //
+    private String name;
+    private double rA;
+    private double dec;
 
-    private static double rightAscension, declination; // calculated actual right ascension and declination
-    private static double x, y, z, d_xy;               // coordinates in cartesian
+    private double mu_ra;
+    private double mu_d;
 
     private double[] hCoo = new double[2];
 
-    public String getName() {
+    boolean isVisible = false;
+
+    String getName() {
         return name;
     }
 
@@ -43,12 +53,20 @@ public class AstronomicalObject {
         this.dec = dec;
     }
 
-    public double getDistance() {
-        return distance;
+    public double getMu_ra() {
+        return mu_ra;
     }
 
-    void setDistance(double distance) {
-        this.distance = distance;
+    void setMu_ra(double mu_ra) {
+        this.mu_ra = mu_ra;
+    }
+
+    public double getMu_d() {
+        return mu_d;
+    }
+
+    void setMu_d(double mu_d) {
+        this.mu_d = mu_d;
     }
 
     double gethCoo(int i) {
@@ -59,30 +77,24 @@ public class AstronomicalObject {
         this.hCoo = hCoo;
     }
 
-    void calculate(double latitude){
-        dec = Math.toRadians(dec);
-        rA = Math.toRadians(rA);
-        x = distance * cos(dec) * cos(rA);
-        y = distance * cos(dec) *  sin(rA);
-        z = distance *  sin(dec);
+    void calculate(double latitude, double JD){
+        rA *= 15;
 
-        d_xy = sqrt(pow(x, 2) + pow(y, 2));
-        rightAscension = pow(tan(z/d_xy), -1);
-        declination = pow(tan(y/x), -1);
-        rightAscension = Math.toDegrees(rightAscension);
+        double t = JD/365.256363;
 
-        dec = Math.toDegrees(dec);
-        rA = Math.toDegrees(rA);
+        mu_ra /= 3600000;
+        mu_d /= 3600000;
 
-        convert(latitude, rightAscension, declination);
+        rA = rA * mu_ra * t;
+        dec = dec * mu_d * t;
+
+        convert(latitude, rA, dec, JD);
     }
 
-    private void convert(double latitude, double rA, double dec_r){
+    private void convert(double latitude, double rA, double dec_r, double JD){
+        double era = 2.0 * Math.PI * (0.7790572732640 + 1.00273781191135448 * JD);
 
-        //rozwiązać problem obliczania GMST
-
-        double cupsOfAries = 23.0+42.0/60+3.0/3600;       //punkt równonocy wiosennej
-        double hourAngle = cupsOfAries - rA;
+        double hourAngle = era - latitude - rA;
 
         double azimuth_sin, azimuth_cos, azimuth, altitude;
         double hourAngle_r, latitude_r;
@@ -121,10 +133,12 @@ public class AstronomicalObject {
             else if(azimuth>0)
                 azimuth+= 270;
         }
-
         hCoo[0] = azimuth;
         hCoo[1] = altitude;
     }
 
-
+    void inFrame(float[] obsHorCoo){
+        if((int)hCoo[0]==(int)obsHorCoo[0] && (int)hCoo[1] == (int)obsHorCoo[1])
+            isVisible = true;
+    }
 }

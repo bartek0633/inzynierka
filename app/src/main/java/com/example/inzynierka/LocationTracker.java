@@ -12,28 +12,30 @@ import android.util.Log;
 
 public class LocationTracker implements LocationListener {
 
-    Context context;
+    private Context context;
 
-    public LocationTracker(Context context){
+    LocationTracker(Context context){
         super();
         this.context = context;
     }
 
-    public Location getLocation(){
+    Location getLocation(){
         if(ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
-            Log.e("gps", "Application does not have permission to use NETWORK.");
+            Log.e("gps", "Application does not have permission to use GPS.");
             return null;
         }
         try {
             LocationManager locationManager = (LocationManager)context.getSystemService(Context.LOCATION_SERVICE);
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
+                    0, 0, this);
             boolean isGPSenabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
             if(isGPSenabled){
-                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 6000, 10, this);
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
+                        6000, 10, this);
                 return locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
             } else {
-                Log.e("gps", "NETWORK in not enabled.");
+                Log.e("gps", "GPS in not enabled.");
             }
         } catch (Exception e){
             e.printStackTrace();

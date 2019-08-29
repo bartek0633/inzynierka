@@ -2,7 +2,6 @@ package com.example.inzynierka;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -32,19 +31,17 @@ public class DataActivition extends AppCompatActivity {
         locationCoo = intent.getDoubleArrayExtra(StartActivity.EXTRA_MESSAGE_LOCATION);
         linearAcceleration = intent.getFloatArrayExtra(StartActivity.EXTRA_MESSAGE_ACCELERATION);
 
-        TextView textView1 = findViewById(R.id.dataTextView1);
-        textView1.setText(String.format("%.3f ",horizontalCoo[0]) + " degrees");
-        TextView textView2 = findViewById(R.id.dataTextView3);
-        textView2.setText(String.format("%.3f ",horizontalCoo[1]) + " degrees");
-        TextView textView3 = findViewById(R.id.dataTextView2);
-        textView3.setText(String.format("%.3f ",horizontalCoo[2]) + " degrees");
-
         selectAngles(horizontalCoo, linearAcceleration);
 
+        TextView textView1 = findViewById(R.id.dataTextView1);
+        textView1.setText(horizontalCooCorrect[0] + " degrees");
+        TextView textView2 = findViewById(R.id.dataTextView3);
+        textView2.setText(horizontalCooCorrect[1] + " degrees");
+
         TextView textView4 = findViewById(R.id.dataTextView4);
-        textView4.setText(String.valueOf(locationCoo[0]));              //latitude
+        textView4.setText(String.valueOf(locationCoo[0]));
         TextView textView5 = findViewById(R.id.dataTextView5);
-        textView5.setText(String.valueOf(locationCoo[1]));              //longitude
+        textView5.setText(String.valueOf(locationCoo[1]));
 
         Date currentTime = Calendar.getInstance().getTime();
 
@@ -66,8 +63,14 @@ public class DataActivition extends AppCompatActivity {
     private void selectAngles(float[] hCoo, float[] lAcc){
         if (Math.abs(lAcc[1]) > Math.abs(lAcc[0])){                 //horizontal
             if(lAcc[1]>=0){                                         //+
-                horizontalCooCorrect[0] = hCoo[0] - 180;
-                horizontalCooCorrect[1] = hCoo[1] + 90;
+                if(hCoo[0]<180)
+                    horizontalCooCorrect[0] = hCoo[0] + 180 ;
+                else
+                    horizontalCooCorrect[0] = hCoo[0] - 180;
+                if(lAcc[2] > 0)
+                    horizontalCooCorrect[1] = hCoo[1];
+                else
+                    horizontalCooCorrect[1] = hCoo[1] + 90;
             } else{                                                 //-
                 horizontalCooCorrect[0] = hCoo[0];
                 horizontalCooCorrect[1] = 90 - hCoo[1];

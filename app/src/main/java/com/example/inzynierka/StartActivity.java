@@ -37,22 +37,25 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.start_activity);
-        ImageButton cameraBtn = (ImageButton) findViewById(R.id.backgroundImageButton);
+        ImageButton cameraBtn = findViewById(R.id.backgroundImageButton);
         sensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
-        ActivityCompat.requestPermissions(StartActivity.this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, 123);
+        ActivityCompat.requestPermissions(StartActivity.this,
+                new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, 123);
         cameraBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                updateOrientationAngles();
+
                 LocationTracker locationTracker = new LocationTracker(getApplicationContext());
                 Location location = locationTracker.getLocation();
                 if(location == null){
-                    Toast.makeText(getApplicationContext(), "GPS unable to get value. \n   Turn on GPS.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "GPS unable to get value. \n\tTurn on GPS.",
+                            Toast.LENGTH_SHORT).show();
                 } else {
                     locationData[0] = location.getLatitude();
                     locationData[1] = location.getLongitude();
                 }
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                updateOrientationAngles();
                 startActivityForResult(intent, 0);
             }
         });
@@ -68,27 +71,18 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
     }
 
     @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
         Sensor accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         if (accelerometer != null){
-            sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_UI);
+            sensorManager.registerListener(this, accelerometer,
+                    SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_UI);
         }
         Sensor magneticField = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
         if (magneticField != null){
-            sensorManager.registerListener(this, magneticField, SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_UI);
+            sensorManager.registerListener(this, magneticField,
+                    SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_UI);
         }
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        sensorManager.unregisterListener(this);
     }
 
     public void updateOrientationAngles(){
@@ -100,7 +94,7 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
         super.onActivityResult(requestCode, resultCode, data);
         Intent intent = new Intent(this, DataActivition.class);
 
-        orientationAngles[0] = (float)Math.toDegrees(orientationAngles[0]);
+        orientationAngles[0] = (float)(Math.toDegrees(orientationAngles[0])+360)%360;
         orientationAngles[1] = (float)Math.toDegrees(orientationAngles[1]);
         orientationAngles[2] = (float)Math.toDegrees(orientationAngles[2]);
 
@@ -108,5 +102,16 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
         intent.putExtra(EXTRA_MESSAGE_LOCATION, locationData);
         intent.putExtra(EXTRA_MESSAGE_ACCELERATION, accelerometerData);
         startActivity(intent);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        sensorManager.unregisterListener(this);
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
     }
 }
