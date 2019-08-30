@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Inzynierka</string>
+    <string name="app_name"> </string>
     <string name="asObj">Astronomical Objects</string>
     <string name="gyro">GYROSCOPE</string>
     <string name="loc">LOCATION</string>
@@ -9,6 +9,8 @@
     <string name="lat">Latitude</string>
     <string name="lon">Longitude</string>
     <string name="calc">CALCULATE</string>
+    <string name="LocFail">Location is not available. Turn on GPS and restart application.</string>
     <string name="noObj">No astronomical objects in the frame.</string>
+    <string name="eptDB">No records found is database.</string>
 
 </resources>

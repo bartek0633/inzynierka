@@ -49,6 +49,13 @@ public class DataActivition extends AppCompatActivity {
         textView6.setText(String.valueOf(currentTime));
 
         Button calculateBtn = findViewById(R.id.calculateBtn);
+
+        if(locationCoo[0] == -1 || locationCoo[1] == -1){
+            calculateBtn.setEnabled(false);
+            TextView fail = findViewById(R.id.textView3);
+            fail.setText(R.string.LocFail);
+        }
+
         calculateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

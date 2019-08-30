@@ -1,21 +1,11 @@
 package com.example.inzynierka;
 
-import android.annotation.SuppressLint;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.TimeZone;
-import java.util.concurrent.TimeUnit;
+import android.util.Log;
 
 import static java.lang.Math.asin;
 import static java.lang.Math.atan;
 import static java.lang.Math.cos;
-import static java.lang.Math.pow;
 import static java.lang.Math.sin;
-import static java.lang.Math.sqrt;
-import static java.lang.Math.tan;
 
 public class AstronomicalObject {
     private String name;
@@ -78,64 +68,72 @@ public class AstronomicalObject {
     }
 
     void calculate(double latitude, double JD){
-        rA *= 15;
+        if(JD > 0 && latitude > 0) {
+            rA *= 15;
 
-        double t = JD/365.256363;
+            double t = JD / 365.256363;
 
-        mu_ra /= 3600000;
-        mu_d /= 3600000;
+            mu_ra /= 3600000;
+            mu_d /= 3600000;
 
-        rA = rA * mu_ra * t;
-        dec = dec * mu_d * t;
+            rA = rA * mu_ra * t;
+            dec = dec * mu_d * t;
 
-        convert(latitude, rA, dec, JD);
+            convert(latitude, rA, dec, JD);
+        }
+        else if (JD < 0)
+            Log.e("AstObj.calculate", "JD lower then 0.");
+        else if (latitude < 0)
+            Log.e("AstObj.calculate", "Latitude lower then 0.");
     }
 
-    private void convert(double latitude, double rA, double dec, double JD){
-        double era = 2.0 * Math.PI * (0.7790572732640 + 1.00273781191135448 * JD);
+    private void convert(double latitude, double rA, double dec, double JD) {
+        if (latitude > 0 && JD > 0) {
+            double era = 2.0 * Math.PI * (0.7790572732640 + 1.00273781191135448 * JD);
 
-        double hourAngle = era - latitude - rA;
+            double hourAngle = era - latitude - rA;
 
-        double azimuth_sin, azimuth_cos, azimuth, altitude;
-        double hourAngle_r, latitude_r, dec_r;
-        hourAngle_r = Math.toRadians(hourAngle);
-        latitude_r = Math.toRadians(latitude);
-        dec_r = Math.toRadians(dec);
+            double azimuth_sin, azimuth_cos, azimuth, altitude;
+            double hourAngle_r, latitude_r, dec_r;
+            hourAngle_r = Math.toRadians(hourAngle);
+            latitude_r = Math.toRadians(latitude);
+            dec_r = Math.toRadians(dec);
 
-        altitude = sin(dec_r)*sin(latitude_r)+cos(dec_r)*cos(latitude_r)*cos(hourAngle_r);
-        altitude = asin(altitude);
-        altitude = Math.toDegrees(altitude);
+            altitude = sin(dec_r) * sin(latitude_r) + cos(dec_r) * cos(latitude_r) * cos(hourAngle_r);
+            altitude = asin(altitude);
+            altitude = Math.toDegrees(altitude);
 
-        azimuth_cos = sin(dec_r)*cos(latitude_r)-cos(dec_r)*sin(latitude_r)*cos(hourAngle_r);
-        azimuth_sin = -cos(dec_r)*sin(hourAngle_r);
+            azimuth_cos = sin(dec_r) * cos(latitude_r) - cos(dec_r) * sin(latitude_r) * cos(hourAngle_r);
+            azimuth_sin = -cos(dec_r) * sin(hourAngle_r);
 
-        azimuth = atan(azimuth_sin/azimuth_cos);
-        azimuth = Math.toDegrees(azimuth);
+            azimuth = atan(azimuth_sin / azimuth_cos);
+            azimuth = Math.toDegrees(azimuth);
 
-        if(azimuth_sin > 0 && azimuth_cos >0) {
-            if (azimuth < 0)
-                azimuth += 90;
-        }
-        else if(azimuth_sin > 0 && azimuth_cos < 0){
-            if(azimuth<0)
-                azimuth+= 180;
-            else if(azimuth>0)
-                azimuth+= 90;
-        }
-        else if(azimuth_sin < 0 && azimuth_cos < 0){
-            if(azimuth<0)
-                azimuth+= 270;
-            else if(azimuth>0)
-                azimuth+= 180;
-        }
-        else if(azimuth_sin < 0 && azimuth_cos > 0){
-            if(azimuth<0)
-                azimuth+= 360;
-            else if(azimuth>0)
-                azimuth+= 270;
-        }
-        hCoo[0] = azimuth;
-        hCoo[1] = altitude;
+            if (azimuth_sin > 0 && azimuth_cos > 0) {
+                if (azimuth < 0)
+                    azimuth += 90;
+            } else if (azimuth_sin > 0 && azimuth_cos < 0) {
+                if (azimuth < 0)
+                    azimuth += 180;
+                else if (azimuth > 0)
+                    azimuth += 90;
+            } else if (azimuth_sin < 0 && azimuth_cos < 0) {
+                if (azimuth < 0)
+                    azimuth += 270;
+                else if (azimuth > 0)
+                    azimuth += 180;
+            } else if (azimuth_sin < 0 && azimuth_cos > 0) {
+                if (azimuth < 0)
+                    azimuth += 360;
+                else if (azimuth > 0)
+                    azimuth += 270;
+            }
+            hCoo[0] = azimuth;
+            hCoo[1] = altitude;
+        } else if (JD < 0)
+            Log.e("AstObj.convert", "JD lower then 0.");
+        else if (latitude < 0)
+            Log.e("AstObj.convert", "Latitude lower then 0.");
     }
 
     void inFrame(float[] obsHorCoo){

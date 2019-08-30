@@ -44,7 +44,7 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
         LocationTracker locationTracker = new LocationTracker(getApplicationContext());
         Location location = locationTracker.getLocation();
         if(location == null){
-            Toast.makeText(getApplicationContext(), "GPS unable to get value. \n\tTurn on GPS.",
+            Toast.makeText(getApplicationContext(), "GPS unable to get value.",
                     Toast.LENGTH_SHORT).show();
             locationData[0] = -1;
             locationData[1] = -1;
