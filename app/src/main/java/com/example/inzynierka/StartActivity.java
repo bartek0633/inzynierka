@@ -41,19 +41,22 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
         sensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
         ActivityCompat.requestPermissions(StartActivity.this,
                 new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, 123);
+        LocationTracker locationTracker = new LocationTracker(getApplicationContext());
+        Location location = locationTracker.getLocation();
+        if(location == null){
+            Toast.makeText(getApplicationContext(), "GPS unable to get value. \n\tTurn on GPS.",
+                    Toast.LENGTH_SHORT).show();
+            locationData[0] = -1;
+            locationData[1] = -1;
+        } else {
+            locationData[0] = location.getLatitude();
+            locationData[1] = location.getLongitude();
+        }
+
         cameraBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                LocationTracker locationTracker = new LocationTracker(getApplicationContext());
-                Location location = locationTracker.getLocation();
-                if(location == null){
-                    Toast.makeText(getApplicationContext(), "GPS unable to get value. \n\tTurn on GPS.",
-                            Toast.LENGTH_SHORT).show();
-                } else {
-                    locationData[0] = location.getLatitude();
-                    locationData[1] = location.getLongitude();
-                }
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 updateOrientationAngles();
                 startActivityForResult(intent, 0);

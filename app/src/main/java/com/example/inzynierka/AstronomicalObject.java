@@ -91,15 +91,16 @@ public class AstronomicalObject {
         convert(latitude, rA, dec, JD);
     }
 
-    private void convert(double latitude, double rA, double dec_r, double JD){
+    private void convert(double latitude, double rA, double dec, double JD){
         double era = 2.0 * Math.PI * (0.7790572732640 + 1.00273781191135448 * JD);
 
         double hourAngle = era - latitude - rA;
 
         double azimuth_sin, azimuth_cos, azimuth, altitude;
-        double hourAngle_r, latitude_r;
+        double hourAngle_r, latitude_r, dec_r;
         hourAngle_r = Math.toRadians(hourAngle);
         latitude_r = Math.toRadians(latitude);
+        dec_r = Math.toRadians(dec);
 
         altitude = sin(dec_r)*sin(latitude_r)+cos(dec_r)*cos(latitude_r)*cos(hourAngle_r);
         altitude = asin(altitude);

@@ -27,13 +27,12 @@ public class LocationTracker implements LocationListener {
         }
         try {
             LocationManager locationManager = (LocationManager)context.getSystemService(Context.LOCATION_SERVICE);
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
-                    0, 0, this);
-            boolean isGPSenabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+            boolean isGPSenabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
             if(isGPSenabled){
-                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
                         6000, 10, this);
-                return locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                return locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             } else {
                 Log.e("gps", "GPS in not enabled.");
             }

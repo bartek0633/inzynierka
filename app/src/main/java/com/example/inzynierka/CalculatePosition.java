@@ -75,7 +75,7 @@ public class CalculatePosition extends AppCompatActivity {
     }
 
     private void readCsv(){
-        InputStream is = getResources().openRawResource(R.raw.hygdata_v3_sorted_cut);
+        InputStream is = getResources().openRawResource(R.raw.hygdata_v3);
         BufferedReader reader = new BufferedReader(
                 new InputStreamReader(is, Charset.forName("UTF-8"))
         );
