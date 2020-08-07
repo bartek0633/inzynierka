@@ -76,8 +76,8 @@ public class AstronomicalObject {
             mu_ra /= 3600000;
             mu_d /= 3600000;
 
-            rA = rA * mu_ra * t;
-            dec = dec * mu_d * t;
+            rA = rA + mu_ra * t;
+            dec = dec + mu_d * t;
 
             convert(latitude, rA, dec, JD);
         }
@@ -130,6 +130,8 @@ public class AstronomicalObject {
             }
             hCoo[0] = azimuth;
             hCoo[1] = altitude;
+
+            System.out.println(name + ";" + hCoo[0] + ";" + hCoo[1]);
         } else if (JD < 0)
             Log.e("AstObj.convert", "JD lower then 0.");
         else if (latitude < 0)
@@ -137,7 +139,7 @@ public class AstronomicalObject {
     }
 
     void inFrame(float[] obsHorCoo){
-        if((int)hCoo[0]==(int)obsHorCoo[0] && (int)hCoo[1] == (int)obsHorCoo[1])
+        if((int)obsHorCoo[0] > ((int)hCoo[0] - 10) && (int)obsHorCoo[0] < ((int)hCoo[0]+10) && (int)obsHorCoo[1] > ((int)hCoo[1] - 10) && (int)obsHorCoo[1] < ((int)hCoo[1] +10))
             isVisible = true;
     }
 }

@@ -61,20 +61,14 @@ public class CalculatePosition extends AppCompatActivity {
             for (int i = 0; i < astronomicalObjects.size(); i++) {
                 astronomicalObjects.get(i).inFrame(obsDir);
                 if (astronomicalObjects.get(i).isVisible)
-                    list.add(astronomicalObjects.get(i).getName());
+                    list.add(astronomicalObjects.get(i).getName() + "\n\t\tAzimuth = " + astronomicalObjects.get(i).gethCoo(0) + "\n\t\tAltitude = " + astronomicalObjects.get(i).gethCoo(1));
             }
             if (list.size() == 0) {
                 TextView textView = findViewById(R.id.textView2);
                 textView.setText(R.string.noObj);
             } else {
-                adapter = new ArrayAdapter<>(this, android.R.layout.list_content, list);
+                adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, list);
                 listView.setAdapter(adapter);
-            }
-
-
-            for (int i = 0; i < astronomicalObjects.size(); i++) {
-                System.out.print((int) astronomicalObjects.get(i).gethCoo(0) + "     ");
-                System.out.println((int) astronomicalObjects.get(i).gethCoo(1));
             }
         }
     }
